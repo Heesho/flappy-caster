@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS users (
+    fid INT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    wallet_address VARCHAR(42) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS contests (
+    id SERIAL PRIMARY KEY,
+    start_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    payout_tx_hash VARCHAR(66)
+);
+
+CREATE TABLE IF NOT EXISTS scores (
+    id SERIAL PRIMARY KEY,
+    user_fid INT REFERENCES users(fid),
+    contest_id INT REFERENCES contests(id),
+    score INT NOT NULL,
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS payouts (
+    id SERIAL PRIMARY KEY,
+    contest_id INT REFERENCES contests(id),
+    user_fid INT REFERENCES users(fid),
+    amount NUMERIC(32, 8) NOT NULL,
+    tx_hash VARCHAR(66),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
